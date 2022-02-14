@@ -28,7 +28,7 @@ const Emoji = styled.span`
 `;
 
 const Box = styled.div`
-  background-color: ${(props) => props.bgColor};
+  background-color: teal;
   width: 200px;
   height: 200px;
   display: flex;
@@ -48,7 +48,7 @@ function App() {
   return (
     <Wrapper>
       <h1>Hello</h1>
-      <Box bgColor="teal">
+      <Box>
         <Emoji>📜</Emoji>
       </Box>
       <Emoji>💰</Emoji>
