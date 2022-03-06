@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import { Link, useMatch } from 'react-router-dom';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
@@ -41,7 +42,7 @@ const OverviewItem = styled.div`
   align-items: center;
   width: 33%;
   span:first-child {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
     text-transform: uppercase;
     margin-bottom: 5px;
@@ -149,11 +150,21 @@ function Coin() {
   const { state } = useLocation() as RouteState;
   const priceMatch = useMatch('/:coinId/price');
   const chartMatch = useMatch('/:coinId/chart');
-  const {isLoading: infoLoading, data: infoData} = useQuery<InfoData>(['info', coinId], () => fetchCoinInfo(coinId));
-  const {isLoading: tickersLoading, data: tickersData} = useQuery<TickersData>(['tickers', coinId], () => fetchCoinTickers(coinId));
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ['info', coinId],
+    () => fetchCoinInfo(coinId),
+    {
+      refetchInterval: 5000
+    }
+  );
+  const { isLoading: tickersLoading, data: tickersData } =
+    useQuery<TickersData>(['tickers', coinId], () => fetchCoinTickers(coinId));
   const loading = infoLoading || tickersLoading;
   return (
     <Containner>
+      <Helmet>
+        <title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
@@ -173,8 +184,8 @@ function Coin() {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? 'Yes' : 'No'}</span>
+              <span>Price:</span>
+              <span>${tickersData?.quotes.USD.price.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
@@ -190,15 +201,15 @@ function Coin() {
           </Overview>
 
           <Tabs>
-            <Tab isActive={chartMatch !== null}>
-              <Link to={`/${coinId}/chart`}>chart</Link>
-            </Tab>
             <Tab isActive={priceMatch !== null}>
               <Link to={`/${coinId}/price`}>price</Link>
             </Tab>
+            <Tab isActive={chartMatch !== null}>
+              <Link to={`/${coinId}/chart`}>chart</Link>
+            </Tab>
           </Tabs>
 
-          <Outlet />
+          <Outlet context={{ coinId }} />
         </>
       )}
     </Containner>

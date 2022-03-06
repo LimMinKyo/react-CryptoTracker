@@ -15,3 +15,12 @@ export function fetchCoinTickers(coinId: string) {
     response.json()
   );
 }
+
+export function fetchCoinHistory(coinId: string) {
+  const TWICE_WEEKS = 60 * 60 * 24 * 7 * 2;
+  const endDate = Math.floor(Date.now() / 1000);
+  const startDate = endDate - TWICE_WEEKS;
+  return fetch(
+    `${BASE_URL}/coins/${coinId}/ohlcv/historical?start=${startDate}&end=${endDate}`
+  ).then((response) => response.json());
+}
