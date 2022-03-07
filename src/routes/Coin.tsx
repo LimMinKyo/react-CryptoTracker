@@ -31,7 +31,7 @@ const Loader = styled.div`
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.theme.cardBgColor};
   padding: 10px 20px;
   border-radius: 10px;
 `;
@@ -65,7 +65,7 @@ const Tab = styled.div<{ isActive: boolean }>`
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.theme.cardBgColor};
   border-radius: 10px;
   color: ${(props) =>
     props.isActive ? props.theme.accentColor : props.theme.textColor};
@@ -154,7 +154,7 @@ function Coin() {
     ['info', coinId],
     () => fetchCoinInfo(coinId),
     {
-      refetchInterval: 5000
+      refetchInterval: 5000,
     }
   );
   const { isLoading: tickersLoading, data: tickersData } =
@@ -163,7 +163,9 @@ function Coin() {
   return (
     <Containner>
       <Helmet>
-        <title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</title>
+        <title>
+          {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
+        </title>
       </Helmet>
       <Header>
         <Title>
@@ -185,7 +187,7 @@ function Coin() {
             </OverviewItem>
             <OverviewItem>
               <span>Price:</span>
-              <span>${tickersData?.quotes.USD.price.toFixed(2)}</span>
+              <span>${tickersData?.quotes?.USD?.price?.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
