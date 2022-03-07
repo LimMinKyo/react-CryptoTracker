@@ -1,8 +1,11 @@
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { RiSunFill, RiMoonFill } from 'react-icons/ri';
 import { fetchCoins } from '../api';
+import { isDarkAtom } from '../atoms';
 
 const Containner = styled.div`
   padding: 0 20px;
@@ -16,11 +19,27 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const Title = styled.h1`
   font-size: 56px;
   color: ${(props) => props.theme.accentColor};
+`;
+
+const ToggleMode = styled.button`
+  all: unset;
+  width: 40px;
+  height: 40px;
+  margin-left: 40px;
+  position: absolute;
+  right: 3rem;
+  cursor: pointer;
+  svg {
+    color: ${(props) => props.theme.cardBgColor};
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const CoinsList = styled.ul``;
@@ -64,11 +83,10 @@ interface ICoin {
   type: string;
 }
 
-interface ICoinsProps {
-  toggleDark: () => void;
-}
-
-function Coins({ toggleDark }:ICoinsProps) {
+function Coins() {
+  const isDark = useRecoilValue(isDarkAtom);
+  const setIsDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleIsDarkAtom = () => setIsDarkAtom((prev) => !prev);
   const { isLoading, data } = useQuery<ICoin[]>('allCoins', fetchCoins);
   return (
     <Containner>
@@ -77,7 +95,9 @@ function Coins({ toggleDark }:ICoinsProps) {
       </Helmet>
       <Header>
         <Title>Coins</Title>
-        <button onClick={toggleDark}>Toggle Dark Mode</button>
+        <ToggleMode onClick={toggleIsDarkAtom}>
+          {isDark ? <RiMoonFill /> : <RiSunFill />}
+        </ToggleMode>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

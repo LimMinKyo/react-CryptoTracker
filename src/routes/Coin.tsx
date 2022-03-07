@@ -3,7 +3,11 @@ import { useQuery } from 'react-query';
 import { Link, useMatch } from 'react-router-dom';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { FaRegArrowAltCircleLeft } from 'react-icons/fa';
+import { RiSunFill, RiMoonFill } from 'react-icons/ri';
 import { fetchCoinInfo, fetchCoinTickers } from '../api';
+import { isDarkAtom } from '../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 const Containner = styled.div`
   padding: 0 20px;
@@ -15,13 +19,35 @@ const Header = styled.header`
   height: 15vh;
   margin: 30px 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
+`;
+
+const BackBtn = styled.div`
+  width: 40px;
+  height: 40px;
+  svg {
+    color: ${(props) => props.theme.cardBgColor};
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+`;
+
+const ToggleMode = styled.button`
+  all: unset;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  svg {
+    color: ${(props) => props.theme.cardBgColor};
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Loader = styled.div`
@@ -146,6 +172,9 @@ interface TickersData {
 }
 
 function Coin() {
+  const isDark = useRecoilValue(isDarkAtom);
+  const setIsDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleIsDarkAtom = () => setIsDarkAtom((prev) => !prev);
   const { coinId } = useParams() as unknown as RouteParams;
   const { state } = useLocation() as RouteState;
   const priceMatch = useMatch('/:coinId/price');
@@ -168,9 +197,17 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
+        <BackBtn>
+          <Link to={'/'}>
+            <FaRegArrowAltCircleLeft />
+          </Link>
+        </BackBtn>
         <Title>
           {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
         </Title>
+        <ToggleMode onClick={toggleIsDarkAtom}>
+          {isDark ? <RiMoonFill /> : <RiSunFill />}
+        </ToggleMode>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
