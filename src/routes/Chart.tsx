@@ -30,26 +30,37 @@ function Chart() {
       refetchInterval: 10000,
     }
   );
+  
   return (
     <div>
       {isLoading ? (
-        'Loading Chart'
+        'Loading Chart...'
       ) : (
         <ApexChart
-          type="line"
-          series={[{ name: 'Price', data: data?.map((price) => price.close) }]}
-          options={{
-            stroke: {
-              curve: 'smooth',
+          type="candlestick"
+          series={[
+            {
+              data: data?.map((price) => ({
+                x: price.time_close,
+                y: [
+                  price.open.toFixed(2),
+                  price.high.toFixed(2),
+                  price.low.toFixed(2),
+                  price.close.toFixed(2),
+                ],
+              })),
             },
+          ]}
+          options={{
             grid: {
-              show: false,
+              show: true,
             },
             chart: {
+              type: 'candlestick',
               width: 500,
               height: 300,
               toolbar: {
-                show: false,
+                show: true,
               },
               background: 'tranparent',
             },
@@ -60,29 +71,19 @@ function Chart() {
               type: 'datetime',
               categories: data?.map((price) => price.time_close),
               labels: {
-                show: false,
+                show: true,
               },
               axisBorder: {
-                show: false,
+                show: true,
               },
               axisTicks: {
-                show: false,
+                show: true,
               },
             },
             yaxis: {
-              show: false,
-            },
-            colors: ['#0fbcf9'],
-            fill: {
-              type: 'gradient',
-              gradient: {
-                gradientToColors: ['#0be881'],
-                stops: [0, 100],
-              },
-            },
-            tooltip: {
-              y: {
-                formatter: (value) => `$${value.toFixed(2)}`,
+              show: true,
+              labels: {
+                formatter: (value) => `$${value}`,
               },
             },
           }}
