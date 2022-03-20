@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -6,6 +5,7 @@ import styled from 'styled-components';
 import { RiSunFill, RiMoonFill } from 'react-icons/ri';
 import { fetchCoins } from '../api';
 import { isDarkAtom } from '../atoms';
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Containner = styled.div`
   padding: 0 20px;
@@ -90,9 +90,11 @@ function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('allCoins', fetchCoins);
   return (
     <Containner>
-      <Helmet>
-        <title>Coins</title>
-      </Helmet>
+      <HelmetProvider>
+        <Helmet>
+          <title>Coins</title>
+        </Helmet>
+      </HelmetProvider>
       <Header>
         <Title>Coins</Title>
         <ToggleMode onClick={toggleIsDarkAtom}>

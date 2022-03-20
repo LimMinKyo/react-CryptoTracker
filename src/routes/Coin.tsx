@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import { Link, useMatch } from 'react-router-dom';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
@@ -8,6 +7,7 @@ import { RiSunFill, RiMoonFill } from 'react-icons/ri';
 import { fetchCoinInfo, fetchCoinTickers } from '../api';
 import { isDarkAtom } from '../atoms';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Containner = styled.div`
   padding: 0 20px;
@@ -191,11 +191,13 @@ function Coin() {
   const loading = infoLoading || tickersLoading;
   return (
     <Containner>
-      <Helmet>
-        <title>
-          {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
-        </title>
-      </Helmet>
+      <HelmetProvider>
+        <Helmet>
+          <title>
+            {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
+          </title>
+        </Helmet>
+      </HelmetProvider>
       <Header>
         <BackBtn>
           <Link to={'/'}>
